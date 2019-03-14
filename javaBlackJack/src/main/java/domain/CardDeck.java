@@ -9,7 +9,7 @@ import java.util.List;
  * */
 public class CardDeck {
 
-	private List<Card> cards;
+	private List<Card> cards; // Card
 	
 	private static final String[] PATTERNS = {"space", "heart", "diamond", "club"};
 	private static final int CARD_COUNT = 13;
@@ -23,8 +23,8 @@ public class CardDeck {
 	 * */
 	private List<Card> generateCards() {
 		
-//		cards = new ArrayList<>();
-		List<Card> cards = new LinkedList<>();
+//		cards = new ArrayList<>(); 
+		cards = new LinkedList<>();
 		
 		for (String pattern : PATTERNS) {
 			for (int i = 1; i <= CARD_COUNT; i++) { // 1 ~ 13
@@ -67,5 +67,23 @@ public class CardDeck {
 		return sb.toString();
 	}
 	
+	// draw() : 1) 남아 있는 카드 중 1개를 뽑는다. 2) 뽑은 카드는 카드덱에서 제거한다. -> 기능 분리
+//	public Card draw() {
+//		int size = cards.size();
+//		int select = (int) (Math.random() * size);
+//		Card selectedCard = cards.get(select);
+//		cards.remove(select);
+//		return selectedCard;
+//	}
+	public Card draw() {
+		Card selectedCard = getRandomCard();
+		cards.remove(selectedCard);
+		return selectedCard;
+	}
 	
+	private Card getRandomCard() { // private : 접근제한자(해당 클래스만 접근 가능)
+		int size = cards.size();
+		int select = (int) (Math.random() * size);
+		return cards.get(select);
+	}
 }
