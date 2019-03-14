@@ -9,8 +9,7 @@ import java.util.List;
  * */
 public class CardDeck {
 
-	private List<Card> cards; // Card
-	
+	private	List<Card> cards;
 	private static final String[] PATTERNS = {"space", "heart", "diamond", "club"};
 	private static final int CARD_COUNT = 13;
 	
@@ -24,12 +23,13 @@ public class CardDeck {
 	private List<Card> generateCards() {
 		
 //		cards = new ArrayList<>(); 
-		cards = new LinkedList<>();
+		List<Card> cards = new LinkedList<>();
 		
 		for (String pattern : PATTERNS) {
 			for (int i = 1; i <= CARD_COUNT; i++) { // 1 ~ 13
-				String denomination = this.numberToDenomination(i);
-				Card card = new Card(pattern, denomination);
+//				String denomination = this.numberToDenomination(i);
+//				int point = this.numberToPoint(i);
+				Card card = new Card(pattern, i);
 //				card.setDenomination(denomination);
 //				card.setPattern(pattern);
 				cards.add(card);
@@ -42,19 +42,6 @@ public class CardDeck {
 		cards = this.generateCards();
 	}
 	
-	private String numberToDenomination(int number) {
-		
-		if ( number == 1 ) {
-			return "A";
-		} else if( number == 11 ) {
-			return "J";
-		} else if( number == 12 ) {
-			return "Q";
-		} else if( number == 13 ) {
-			return "K";
-		}
-		return String.valueOf(number); // number가 null 이면 문자열 null을 만들어서 담는다.
-	}
 
 	@Override
 	public String toString() {
@@ -86,4 +73,5 @@ public class CardDeck {
 		int select = (int) (Math.random() * size);
 		return cards.get(select);
 	}
+	
 }
