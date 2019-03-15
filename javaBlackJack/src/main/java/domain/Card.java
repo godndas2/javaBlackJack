@@ -1,62 +1,34 @@
 package domain;
 
+
 /*
  * Card의 pattern은 무늬
  * denomination은 A,2~10,J,Q,K
  * */
 public class Card {
 
-	private String pattern;
-	private String denomination;
-	private int point;
+	private Pattern pattern;
+	private Denomination denomination;
 	
 	// 생성자를 수정하여 반복문의 index가 들어오면 denomination과 point를 계산하도록 수정
-	public Card(String pattern,int index) {
+	public Card(Pattern pattern,Denomination denomination) {
 		this.pattern = pattern;
-		this.denomination = this.numberToDenomination(index);
-		this.point = this.numberToPoint(index);
-	}
-	
-	private String numberToDenomination(int number) {
-		
-		if ( number == 1 ) {
-			return "A";
-		} else if( number == 11 ) {
-			return "J";
-		} else if( number == 12 ) {
-			return "Q";
-		} else if( number == 13 ) {
-			return "K";
-		}
-		return String.valueOf(number); // number가 null 이면 문자열 null을 만들어서 담는다.
-	}
-	
-	private int numberToPoint(int number) { // Card의 point값을 계산하는 역할, CardDeck이 생성될 때 52개 카드의 point도 자동으로 할당
-		if (number >= 11) {
-			return 10;
-		}
-		return number;
-	}
-	
-	public String getPattern() {
-		return pattern;
-	}
-	public void setPattern(String pattern) {
-		this.pattern = pattern;
-	}
-	public String getDenomination() {
-		return denomination;
-	}
-	public void setDenomination(String denomination) {
 		this.denomination = denomination;
 	}
-
-	public int getPoint() {
-		return point;
+	
+	public Pattern getPattern() {
+		return pattern;
 	}
 
-	public void setPoint(int point) {
-		this.point = point;
+	public void setPattern(Pattern pattern) {
+		this.pattern = pattern;
+	}
+
+	public Denomination getDenomination() {
+		return denomination;
+	}
+	public void setDenomination(Denomination denomination) {
+		this.denomination = denomination;
 	}
 	
 	@Override
@@ -64,4 +36,52 @@ public class Card {
 		return "Card [pattern=" + pattern + ", denomination=" + denomination + "]";
 	}
 	
+	public enum Pattern { /* 문자열이 아닌 Pattern이란 enum으로 대체
+	 						 Card외에는 사용되는 곳이 없기 때문에
+							 innerType, Card 내부에 선언
+	 					  */
+		SPACE("SPACE"),
+		HEART("heart"),
+		DIAMOND("diamond"),
+		CLUB("club");
+		
+		private String value;
+		
+		Pattern(){}
+		
+		Pattern(String value) {
+			this.value = value;
+		}
+	}
+	
+	public enum Denomination {
+		
+		ACE("A", 1),
+        TWO("2", 2),
+        THREE("3", 3),
+        FOUR("4", 4),
+        FIVE("5", 5),
+        SIX("6", 6),
+        SEVEN("7", 7),
+        EIGHT("8", 8),
+        NINE("9", 9),
+        TEN("10", 10),
+        JACK("J", 10),
+        QUEEN("Q", 10),
+        KING("K", 10);
+	
+	private String mark;
+	private int point;
+	
+	Denomination(){}
+	
+    Denomination(String mark, int point) {
+        this.mark = mark;
+        this.point = point;
+    }
+        
+    public int getPoint() {
+        return this.point;
+    }  
+  }
 }
