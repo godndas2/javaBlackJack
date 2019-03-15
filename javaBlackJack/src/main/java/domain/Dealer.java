@@ -11,15 +11,38 @@ import java.util.List;
  * 
  * 게임의 승패 판단 : Rule, 카드뽑기 : CardDeck
  * */
-public class Dealer {
+public class Dealer implements Player{
 
 	private List<Card> cards;
+	private boolean turn;
+	
 	private static final int CAN_RECEIVE_POINT = 16;
+	private static final String NAME = "딜러"; // 상수인 이유 : Dealer의 경우엔 한 게임에 딜러 1명 외에는 존재할 수 없기 떄문(변경불가)
 	
 	public Dealer() {
 		cards = new ArrayList<>();
 	}
 	
+	 @Override
+	    public void turnOff() {
+	        this.setTurn(false);
+	    }
+
+	    @Override
+	    public void turnOn() {
+	        this.setTurn(true);
+	    }
+
+	    @Override
+	    public boolean isTurn() {
+	        return this.turn;
+	    }
+
+	    private void setTurn(boolean turn) {
+	        this.turn = turn;
+	    }
+	
+	@Override
 	public void receiveCard(Card card) {
 		if (this.isReceiveCard()) { // 총 포인트 합이 16이하인 경우
 			this.cards.add(card);
@@ -41,6 +64,7 @@ public class Dealer {
 		return sum;
 	}
 	
+	@Override
 	public void showCards() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("현재 카드 보유 목록 \n");
@@ -52,7 +76,13 @@ public class Dealer {
 		System.out.println(sb.toString());
 	}
 	
+	@Override
 	public List<Card> openCards() {
 		return this.cards;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 }

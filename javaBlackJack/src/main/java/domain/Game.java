@@ -1,68 +1,109 @@
 package domain;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Game {
 
+	private static final int INIT_RECEIVE_CARD_COUNT = 2;
+	private static final String STOP_RECEIVE_CARD = "0";
+	
 	public void play() {
 		System.out.println("========== BlackJack ==========");
 		Scanner sc = new Scanner(System.in);
-		Dealer dealer = new Dealer();
-		Gamer gamer = new Gamer();
+//		Dealer dealer = new Dealer();
+//		Gamer gamer = new Gamer();
 		Rule rule = new Rule();
 		CardDeck cardDeck = new CardDeck();
 		
-		initPhase(cardDeck, gamer, dealer);
-		playingPhase(sc, cardDeck, gamer, dealer);
+		List<Player> players = Arrays.asList(new Gamer("사용자A"), new Dealer());
+		List<Player> initAfterPlayers = initPhase(cardDeck, players);
+		List<Player> playingAfterPlayer = playingPhase(sc, cardDeck, initAfterPlayers);
+		
+		Player winner = rule.getWinner(playingAfterPlayer);
+		System.out.println("Winner : " + winner.getName());
+			
+	}
+	
+	
+	private List<Player> receiveCardAllPlayers(Scanner sc, CardDeck cardDeck, List<Player> players) {
+//		boolean isAllPlayerTurnOff = true;
+		
+		for (Player player : players) {
+			System.out.println(player.getName() + "님 차례입니다.");
+			
+			if (isReceiveCard(sc)) {
+				Card card = cardDeck.draw();
+				player.receiveCard(card);
+				player.turnOn();
+//				isAllPlayerTurnOff  = false;
+			} else {
+//				isAllPlayerTurnOff = true;
+				player.turnOff();
+			}
+		}
+		return players;
+	}
+	
+	private boolean isAllPlayerTurnOff(List<Player> players) { // 카드뽑기 종료상태인지 확인하는 역할
+		for (Player player : players) {
+			if (player.isTurn()) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	// 카드 뽑기
-	public void playingPhase(Scanner sc, CardDeck cardDeck, Gamer gamer, Dealer dealer) {
-		String gamerInput, dealerInput;
-		boolean isGamerTurn = false, isDealerTurn = false;
+	private List<Player> playingPhase(Scanner sc, CardDeck cardDeck, List<Player> players) {
+//		String gamerInput, dealerInput;
+//		boolean isGamerTurn = false, isDealerTurn = false;
+//		while (true) {
+//			boolean isAllPlayerTurnOff = receiveCardAllPlayers(sc, cardDeck, players);
+//
+//			if (isAllPlayerTurnOff) {
+//				break;
+//			}
+//		}
 		
+		/*
+		 *  receiveCardAllPlayers : 모든 Player가 Card를 뽑도록 하는 역할
+			playingPhase : receiveCardAllPlayers 결과에 따라 receiveCardAllPlayers를 반복시키는 역할
+			isReceiveCard : Player 개개인에게 카드를 뽑을건지 의사를 묻는 역할
+		 * */
+		List<Player> cardReceivedPlayers;
 		while (true) {
-			System.out.println("카드를 뽑으시겠습니까? 종료:0");
-			gamerInput = sc.nextLine();
-			
-			if ("0".equals(gamerInput)) {
-				isGamerTurn = true;
-				System.out.println("종료되었습니다.");
-			} else {
-				Card card = cardDeck.draw(); // 뽑고
-				gamer.receiveCard(card); // 받고 확인
-			}
-			
-			System.out.println("카드를 뽑겠습니까? 종료:0");
-			dealerInput = sc.nextLine();
-			
-			if ("0".equals(dealerInput)) {
-				isDealerTurn = true;
-				System.out.println("종료되었습니다.");
-			} else {
-				Card card = cardDeck.draw();
-				dealer.receiveCard(card);
-			}
-			
-			if ( isGamerTurn && isDealerTurn) {
+			cardReceivedPlayers = receiveCardAllPlayers(sc, cardDeck, players);
+			if (isAllPlayerTurnOff(cardReceivedPlayers)) {
 				break;
 			}
+				
 		}
+		return cardReceivedPlayers;
+	}
+	
+	private boolean isReceiveCard(Scanner sc) {
+		System.out.println("카드를 뽑겠습니까? 종료:0");
+		return !STOP_RECEIVE_CARD.equals(sc.nextLine());
 	}
 	
 	// 처음 시작시 Dealer와 Gamer가 2장씩 카드를 받는 역할을 담당
-	
-	private static final int INIT_RECEIVE_CARD_COUNT = 2;
-	
-	private void initPhase(CardDeck cardDeck, Gamer gamer, Dealer dealer) {
+	private List<Player> initPhase(CardDeck cardDeck, List<Player> players) {
+//		for (int i = 0; i < INIT_RECEIVE_CARD_COUNT; i++) {
+//		Card card = cardDeck.draw();
+//		gamer.receiveCard(card);
+//		
+//		Card card2 = cardDeck.draw();
+//		dealer.receiveCard(card2);
+//	}
 		System.out.println("처음 2장의 카드를 각자 뽑겠습니다.");
-		
 		for (int i = 0; i < INIT_RECEIVE_CARD_COUNT; i++) {
-			Card card = cardDeck.draw();
-			gamer.receiveCard(card);
-			
-			Card card2 = cardDeck.draw();
-			dealer.receiveCard(card2);
+			for (Player player : players) {
+				Card card = cardDeck.draw();
+				player.receiveCard(card);
+			}
 		}
+		return players;
 	}
 }
